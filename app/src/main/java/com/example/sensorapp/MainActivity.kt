@@ -16,6 +16,7 @@ const val TAG = "SENSORS"
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private lateinit var sm: SensorManager
+    private lateinit var linearAccelerationSensor: Sensor
     private lateinit var stepCounterSensor: Sensor
 //    var stepCounterSensor: Sensor? = null
 
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         setContentView(R.layout.activity_main)
 
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        stepCounterSensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+        linearAccelerationSensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         Log.d(TAG, sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION).toString())
 
 
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(p0: SensorEvent?) {
-        if(p0?.sensor == stepCounterSensor){
+        if(p0?.sensor == linearAccelerationSensor){
             Log.d(TAG, "p0 $p0")
             Log.d(TAG, (p0?.values?.get(0) ?: -1f).toString())
 //            Log.d(TAG, p0?.values?.get(0).toString())
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume(){
         super.onResume()
-        stepCounterSensor?.also{
+        linearAccelerationSensor?.also{
             sm.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
