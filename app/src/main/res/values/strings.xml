@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">sensorApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="sens_val">step sensor value %1$s m/s2</string>
+</resources>
