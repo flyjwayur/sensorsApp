@@ -26,23 +26,20 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         linearAccelerationSensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+        stepCounterSensor = sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         Log.d(TAG, sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION).toString())
 
-
-        setSupportActionBar(toolbar)
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
     }
 
     override fun onSensorChanged(p0: SensorEvent?) {
         if(p0?.sensor == linearAccelerationSensor){
             Log.d(TAG, "p0 $p0")
             Log.d(TAG, (p0?.values?.get(0) ?: -1f).toString())
-//            Log.d(TAG, p0?.values?.get(0).toString())
-            stepContent.text = getString(R.string.sens_val, (p0?.values?.get(0) ?: -1f).toString())
+            linearAccelationText.text = getString(R.string.accelation_val, (p0?.values?.get(0) ?: -1f).toString())
+        }
+
+        if(p0?.sensor == stepCounterSensor){
+            stepContent.text = getString(R.string.stepCount_val, (p0?.values?.get(0) ?: 1).toString())
         }
     }
 
@@ -53,6 +50,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onResume(){
         super.onResume()
         linearAccelerationSensor?.also{
+            sm.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+
+        stepCounterSensor?.also{
             sm.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
