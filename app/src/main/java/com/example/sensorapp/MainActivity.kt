@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -18,7 +19,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var sm: SensorManager
     private lateinit var linearAccelerationSensor: Sensor
     private lateinit var stepCounterSensor: Sensor
-//    var stepCounterSensor: Sensor? = null
+    private lateinit var magnaticSensor: Sensor
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,20 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         linearAccelerationSensor = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         stepCounterSensor = sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        Log.d(TAG, sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION).toString())
+        magnaticSensor = sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+        val allSensor = sm.getSensorList(Sensor.TYPE_ALL)
+
+        allSensor.forEach {
+            Log.d(TAG, it.name)
+        }
+
+        button_showMagnetic.setOnClickListener {
+            if(magnaticSensor != null){
+                sm.registerListener(this, magnaticSensor, SensorManager.SENSOR_DELAY_NORMAL)
+            } else{
+                Toast.makeText(this, "no magnetic sensor", Toast.LENGTH_LONG).show()
+            }
+        }
 
     }
 
@@ -41,10 +56,16 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if(p0?.sensor == stepCounterSensor){
             stepContent.text = getString(R.string.stepCount_val, (p0?.values?.get(0) ?: 1).toString())
         }
+
+        if(p0?.sensor == magnaticSensor){
+            val value = p0?.values?.get(0).toString()
+            val result = getString(R.string.magnetic_sensor)+value
+            magneticSensorText.text = result
+        }
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-
+        Log.d(TAG, "onAccuracyChanged")
     }
 
     override fun onResume(){
@@ -55,6 +76,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         stepCounterSensor?.also{
             sm.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+
+        magnaticSensor?.also{
+
         }
     }
 

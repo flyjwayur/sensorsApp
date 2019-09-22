@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="accelation_val">The linear acceleration sensor value is %1$s m/s2</string>
     <string name="stepCount_val">Step count is %1$s</string>
+    <string name="magnetic_sensor">Magnetic sensor : </string>
+    <string name="show_magnetic_data">Show Magnetic Data</string>
 </resources>
